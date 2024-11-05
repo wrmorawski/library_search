@@ -3,10 +3,11 @@ from bs4 import BeautifulSoup
 import random
 from urllib.parse import quote
 
-def get_books_from_library(text, url, location = None):
+def get_books_from_library(text: str, url: str, prefered_locations: list[str] = None):
     # Format the city for use in the URL
     text = quote(text)
 
+    found_in_location = False
     # Create the URL (assumption: the search text is at the end)
     url = url+text
 
@@ -27,24 +28,30 @@ def get_books_from_library(text, url, location = None):
     if not book_elements:
         book_elements = soup.find_all("h1", {"class": "title"})
 
-    if location: 
+    if prefered_locations: 
         all_locations = soup.find_all("span", {"class": "ItemBranch"})
         all_locations = [loc.text.strip() for loc in all_locations]
         if all_locations: 
             print(set(all_locations))
-            if location in all_locations: 
-                print("ksiąka znajduje się w wypozyczalni")
-            else: 
-                print("ksiązka jest w innej lokalizacji")  
+            for prefered_location in prefered_locations:
+                if prefered_locations in all_locations: 
+                    # found_in_location = True
+                    print("ksiązka jest w preferowanej lokalizacji")
+                    break
+                else: 
+                    print("ksiązka jest w innej lokalizacji")  
         else:
             all_locations = soup.find_all("td", {"class": "location"})
             all_locations = [loc.find("span").text.strip() for loc in all_locations]
             if all_locations:
-                print(set(all_locations))   
-                if location in all_locations: 
-                    print("ksiąka znajduje się w wypozyczalni")
-                else: 
-                    print("ksiązka jest w innej lokalizacji")
+                for prefered_location in prefered_locations:  
+                    if prefered_location in all_locations: 
+                        # found_in_location = True
+                        print("ksiązka jest w preferowanej lokalizacji")
+                        break
+                    else: 
+                        print("ksiązka jest w innej lokalizacji")
+                        print(set(all_locations)) 
     
     books = [book.text.strip() for book in book_elements]
     
@@ -54,6 +61,7 @@ def get_books_from_library(text, url, location = None):
         # return url
     else:
         return url
+    # all_locations
 
 def get_books_from_library_by_author(author):
     pass

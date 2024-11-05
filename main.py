@@ -18,7 +18,7 @@ if __name__ == "__main__":
         # if len(isbn) > 3:
 
         #     clear_isbn = isbn.replace("=", "").replace('"', '')
-        results = get_books_from_library(title, main_url.format('ti'), location="Wypożyczalnia nr 28")
+        results = get_books_from_library(title, main_url.format('ti'), prefered_locations=["Wypożyczalnia nr 28"])
         if results: 
             print(title, "znaleziono taką lub podobną ksiązkę ksiąkę")
             print(results)
